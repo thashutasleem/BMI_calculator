@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BMI CALCULATOR</title>
+    <meta charset="utf-8" />
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: rgb(243, 226, 213);
+      background-position: absolute;
+      background-size: cover;
+    }
+    header {
+      width: auto;
+      height: 80px;
+    }
+    .container {
+      position: absolute;
+      margin: 20px;
+      max-width: 1000px;
+      padding: 50px;
+      background: whitesmoke;
+    }
+    #popbutton {
+      width: 100px;
+      height: 30px;
+      background-color: rgb(250, 205, 174);
+      border-radius: 10px;
+      color: black; /* SET COLOR IN WHITE */
+    }
+
+    #popbutton:hover {
+      background-color: white;
+      color: black; /* SET COLOR IN BLACK */
+    }
+    header {
+      background-color: rgb(250, 205, 174);
+    }
+    h1 {
+      text-align: center;
+      text-shadow: 1.5px 1.5px;
+    }
+  </style>
+  <body>
+    <header class="">
+      <h1 style="margin-top:2px;padding-top:18px;">
+        BODY MASS INDEX CALCULATOR
+      </h1>
+    </header>
+    <div style="margin-left:35%;padding-top:150px;width:30%">
+      <form>
+        <fieldset style="width:100%">
+          <legend>BMI CALCULATOR</legend>
+          <table style="margin-left:70px;">
+            <tr>
+              <td>WEIGHT</td>
+            </tr>
+            <tr>
+              <td><input type="number" name="weight" id="weight" />kg</td>
+            </tr>
+            <tr>
+              <td>HEIGHT</td>
+            </tr>
+            <tr>
+              <td><input type="number" name="height" id="height" />cm</td>
+            </tr>
+
+            <tr>
+              <td align="center" style="margin-top: 10px">
+                <input
+                  type="button"
+                  id="popbutton"
+                  value="Submit"
+                  onclick="calculate_bmi()"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td id="bmi"></td>
+            </tr>
+          </table>
+        </fieldset>
+      </form>
+    </div>
+    <script>
+      let asyncRequest;
+      function readystatechange() {
+        if (asyncRequest.readyState == 4 && asyncRequest.status == 200) {
+          var text = document.getElementById("response"); //  text is an id of a
+          var resp = asyncRequest.responseText;
+          console.log(resp);
+          document.getElementById("bmi").innerHTML =
+            "Your BMI is: " + JSON.parse(resp).bmi.toFixed(2);
+        }
+      }
+
+      function calculate_bmi() {
+        try {
+          asyncRequest = new XMLHttpRequest();
+          asyncRequest.addEventListener(
+            "readystatechange",
+            readystatechange,
+            false
+          );
+          asyncRequest.open("POST", "/get-bmi", true); //   /Test is url to Servlet!
+          asyncRequest.setRequestHeader(
+            "Content-Type",
+            "application/x-www-form-urlencoded"
+          );
+          let data = `weight=${
+            document.getElementById("weight").value
+          }&height=${encodeURI(document.getElementById("height").value)}`;
+          console.log(data);
+          asyncRequest.send(data);
+        } catch (exception) {
+          alert("Request failed");
+          console.log(exception);
+        }
+      }
+    </script>
+  </body>
+</html>
